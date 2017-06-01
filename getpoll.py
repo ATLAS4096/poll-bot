@@ -55,11 +55,11 @@ def getPoll(resourcePath, baseName, saveAside=True, debug=False):
 
 # For testing
 
-def main():
-    baseName = "trump-approval-poll"
-    resource = 'https://elections.huffingtonpost.com/pollster/api/v2/polls/gallup-27729'
-    result = getPoll(resource, baseName, saveAside=True, debug=True)
-    print result
-
-if __name__ == "__main__":
-    main()
+# def main():
+#     baseName = "trump-approval-poll"
+#     resource = 'https://elections.huffingtonpost.com/pollster/api/v2/polls/gallup-27729'
+#     result = getPoll(resource, baseName, saveAside=True, debug=True)
+#     print result
+#
+# if __name__ == "__main__":
+#     main()
