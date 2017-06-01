@@ -51,7 +51,7 @@ def getPoll(resourcePath, baseName, saveAside=True, debug=False):
     file = open(fileName, "w")
     file.write(inJSON)
     file.close()
-    return True
+    return json.loads(inJSON)
 
 # For testing
 
