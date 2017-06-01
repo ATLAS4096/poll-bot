@@ -1,8 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-debug = True
-
-def isDifferent(firstFile, secondFile):
+def isDifferent(firstFile, secondFile, debug=False):
 
     file = open(firstFile, "r")
     firstContent = file.read()
@@ -30,7 +29,7 @@ def isDifferent(firstFile, secondFile):
 def main():
     first = "poll.json"
     second = "poll.json"
-    return isNewer(first, second)
+    print isDifferent(first, second, debug=True)
 
 if __name__ == "__main__":
     main()
