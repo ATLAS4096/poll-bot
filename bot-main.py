@@ -9,9 +9,25 @@ import datetime
 
 from getpoll import *
 from isdifferent import *
+from credentials import *
 
-# Main
-def main():
+MainLoopTimer = 30
+
+#
+# Initialize and message when the bot starts
+#
+def initialize():
+    message = 'ATLAS poll-bot restarted...'
+    recipients = [COREY, DAD]
+    for recipient in recipients:
+        # Send message to recipiate as a direct message
+        # TODO: add Twitter messaging
+        0
+
+#
+# Check a poll result and decide whether to act on it
+#
+def checkPoll():
 
     pollName = "trump-approval-poll"
     preservedPollName = "trump-approval-poll.last"
@@ -36,8 +52,39 @@ def main():
         print "   Approve: " + str(result["Approve"])
         print "   Disapprove: " + str(result["Disapprove"])
         print "   See: " + pollReferralLink
+
+        # TODO: send this text as a tweet
     else:
         print "Should not tweet."
 
+#
+# Remote command handling
+#
+
+CommandNone = 0
+CommandExit = 999
+
+def remoteCommandCheck():
+    # TODO: add Twitter check
+    return CommandNone
+
+def processRemoteCommand(command = CommandNone):
+    # TODO: add command handling
+    return command
+
+#
+# Main
+#
 if __name__ == "__main__":
-    main()
+    print "Starting..."
+    initialize()
+    while True:
+        remoteCommand = remoteCommandCheck()
+        if remoteCommand == CommandExit:
+            break
+        else:
+            processRemoteCommand(remoteCommand)
+        checkPoll()
+        print 'Waiting ' + str(MainLoopTimer) + ' seconds.'
+        time.sleep(MainLoopTimer)
+    print 'Exiting...'
