@@ -12,6 +12,7 @@ from getpoll import *
 from isdifferent import *
 from credentials import *
 
+TweetItOut = True
 MainLoopTimer = 30
 
 #
@@ -22,7 +23,7 @@ def initialize():
     recipients = [COREY, DAD]
     for recipient in recipients:
         # Send message to recipient as a direct message
-        tweeter.message(recipient, message)
+        if TweetItOut: tweeter.message(recipient, message)
 
 #
 # Check a poll result and decide whether to act on it
@@ -31,13 +32,18 @@ def checkPoll():
 
     pollName = "trump-approval-poll"
     preservedPollName = "trump-approval-poll.last"
-    resource = 'https://elections.huffingtonpost.com/pollster/api/v2/polls/gallup-27729'
+    resourceBase = 'https://elections.huffingtonpost.com/pollster/api/v2/polls/'
     pollDisplayName = "Trump Approval Rating - Gallup"
-    pollReferralLink = "https://elections.huffingtonpost.com/pollster/polls/gallup-27729"
+    pollReferralBase = "https://elections.huffingtonpost.com/pollster/polls/"
+    pollListResource = "https://elections.huffingtonpost.com/pollster/api/v2/polls"
 
-    # NBC / WSJ: nbc-wsj-27531
-    # Quinnipiac: quinnipiac-27728
-    # Gallup: gallup-27729
+    pollId = findPoll(pollListResource, 'gallup')
+    resource = resourceBase + pollId
+    pollReferralLink = pollReferralBase + pollId
+
+    # NBC / WSJ: nbc-wsj-<number>
+    # Quinnipiac: quinnipiac-<number>
+    # Gallup: gallup-<number>
 
     # Preserve the last polling data
     if os.path.isfile(pollName + '.json'):
@@ -53,7 +59,7 @@ def checkPoll():
             "   Disapprove: " + str(result["Disapprove"]) + \
             "   See: " + pollReferralLink
         print message
-        tweeter.tweet(message)
+        if TweetItOut: tweeter.tweet(message)
     else:
         print "Not tweeting."
 
