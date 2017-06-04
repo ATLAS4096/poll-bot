@@ -13,7 +13,7 @@ from isdifferent import *
 from credentials import *
 
 TweetItOut = True
-MainLoopTimer = 30
+MainLoopTimer = 120
 
 #
 # Initialize and message when the bot starts
