@@ -99,7 +99,7 @@ def send():
 def sends(repeats):
     i = 0
     while i < repeats:
-        act()
+        send()
         i = i + 1
 
 # MESSAGE RESPONSE
@@ -115,11 +115,11 @@ def getMsgs():
     return
 
 # TESTING
-push(0, "Hi, there!")
-#add("send")
-while True:
-    if len(MainQueue) > 0:
-        execute()
-        time.sleep(60)
-    else:
-        add("listen")
+# push(0, "Hi, there!")
+# #add("send")
+# while True:
+#     if len(MainQueue) > 0:
+#         execute()
+#         time.sleep(60)
+#     else:
+#         add("listen")

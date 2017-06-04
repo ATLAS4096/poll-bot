@@ -6,6 +6,7 @@ import json
 import time
 import tweepy
 import datetime
+import tweeter
 
 from getpoll import *
 from isdifferent import *
@@ -20,9 +21,8 @@ def initialize():
     message = 'ATLAS poll-bot restarted...'
     recipients = [COREY, DAD]
     for recipient in recipients:
-        # Send message to recipiate as a direct message
-        # TODO: add Twitter messaging
-        0
+        # Send message to recipient as a direct message
+        tweeter.message(recipient, message)
 
 #
 # Check a poll result and decide whether to act on it
@@ -48,19 +48,18 @@ def checkPoll():
 
     # Compare to see if result has changed
     if isDifferent(pollName + '.json', preservedPollName + '.json', debug=True):
-        print pollDisplayName
-        print "   Approve: " + str(result["Approve"])
-        print "   Disapprove: " + str(result["Disapprove"])
-        print "   See: " + pollReferralLink
-
-        # TODO: send this text as a tweet
+        message = pollDisplayName + \
+            "   Approve: " + str(result["Approve"]) + \
+            "   Disapprove: " + str(result["Disapprove"]) + \
+            "   See: " + pollReferralLink
+        print message
+        tweeter.tweet(message)
     else:
-        print "Should not tweet."
+        print "Not tweeting."
 
 #
 # Remote command handling
 #
-
 CommandNone = 0
 CommandExit = 999
 
