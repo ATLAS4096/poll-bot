@@ -84,12 +84,15 @@ if __name__ == "__main__":
     print "Starting..."
     initialize()
     while True:
-        remoteCommand = remoteCommandCheck()
-        if remoteCommand == CommandExit:
-            break
-        else:
-            processRemoteCommand(remoteCommand)
-        checkPoll()
+        try:
+            remoteCommand = remoteCommandCheck()
+            if remoteCommand == CommandExit:
+                break
+            else:
+                processRemoteCommand(remoteCommand)
+            checkPoll()
+        except Exception as e:
+            print "Exception in main loop: " + str(e)
         print 'Waiting ' + str(MainLoopTimer) + ' seconds.'
         time.sleep(MainLoopTimer)
     print 'Exiting...'
