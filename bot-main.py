@@ -92,8 +92,7 @@ if __name__ == "__main__":
                 processRemoteCommand(remoteCommand)
             checkPoll()
         except Exception as e:
-            print "Exception in main loop: "
-            print e
+            print "Exception in main loop...continuing."
         print 'Waiting ' + str(MainLoopTimer) + ' seconds.'
         time.sleep(MainLoopTimer)
     print 'Exiting...'
