@@ -19,6 +19,7 @@ MainLoopTimer = 120
 # Initialize and message when the bot starts
 #
 def initialize():
+    time.sleep(60)
     message = 'ATLAS poll-bot restarted...'
     recipients = [COREY, DAD]
     for recipient in recipients:

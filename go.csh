@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nohup python bot-main.py &
+nohup /usr/bin/python bot-main.py &
