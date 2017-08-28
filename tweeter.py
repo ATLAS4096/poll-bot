@@ -34,6 +34,8 @@ def message(user, msg):
 # Read the most recent message
 def read():
     incoming = api.direct_messages(count = 1, full_text = True)
+    textTemp = ""
+    senderTemp = ""
     for i in incoming:
         textTemp = i.text
         senderTemp = i.sender_id
@@ -68,7 +70,7 @@ def execute():
 def log():
     print "Execute command triggered LOG."
 
-# OUTBOUND QUEING SYSTEM
+# OUTBOUND QUEUEING SYSTEM
 OutQueue = []
 
 # Send something with up to 3 arguments into OutQueue
@@ -101,6 +103,11 @@ def sends(repeats):
     while i < repeats:
         send()
         i = i + 1
+
+# Push message to OutQueue and add send command to mainQueue
+def pushAdd(tgt, message):
+    push(tgt, message)
+    add("send")
 
 # MESSAGE RESPONSE
 # Save the most recent message

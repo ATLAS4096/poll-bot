@@ -12,9 +12,11 @@ from getpoll import *
 from isdifferent import *
 from credentials import *
 
+Version = 2.0
+
 Debug = True # Production: set to False
-TweetItOut = False # Production: set to True
-InitialDelayTimer = 6 # Production: set to 60
+TweetItOut = True # Production: set to True
+InitialDelayTimer = 6 # Production: set to 60 # FOR PI: wait for Wi-Fi to start on reboot
 MainLoopTimer = 12 # Production set to 120
 
 BetweenTweetTimer = 5
@@ -85,9 +87,10 @@ def checkPoll(poll):
             "   Disapprove: " + str(result["Disapprove"]) + \
             "   See: " + pollReferralLink
         print message
-        if TweetItOut: tweeter.tweet(message)
+        # if TweetItOut: tweeter.tweet(message)
+        if TweetItOut: tweeter.pushAdd(0, message)
     else:
-        print "Not tweeting."
+        print "No difference in poll, not tweeting."
 
 #
 # Remote command handling
@@ -104,9 +107,10 @@ def processRemoteCommand(command = CommandNone):
     return command
 
 #
-# Main
+# <>----------MAIN LOOP----------<>
 #
 if __name__ == "__main__":
+    print "ATLAS Poll-Bot version " + str(Version)
     print "Starting..."
     initialize()
     while True:
@@ -117,10 +121,21 @@ if __name__ == "__main__":
             else:
                 processRemoteCommand(remoteCommand)
             checkPoll(ipsosPoll)
-            time.sleep(BetweenTweetTimer)
+            #time.sleep(BetweenTweetTimer) # replaced by queue
             checkPoll(gallupPoll)
-            time.sleep(BetweenTweetTimer)
+            #time.sleep(BetweenTweetTimer) # replaced by queue
             checkPoll(quinnipiacPoll)
+
+            #Queueing System
+            if len(tweeter.MainQueue) > 0:
+                print "Executing from Queue"
+                tweeter.execute()
+                time.sleep(60)
+            else:
+                "Nothing in queue to execute."
+                tweeter.add("listen")
+                time.sleep(60)
+
         except Exception as e:
             try:
                 print e
@@ -128,5 +143,5 @@ if __name__ == "__main__":
                 print "Could not print exception."
             print "Exception in main loop...continuing."
         print 'Waiting ' + str(MainLoopTimer) + ' seconds.'
-        time.sleep(MainLoopTimer)
+        # time.sleep(MainLoopTimer) # replaced by queue
     print 'Exiting...'
