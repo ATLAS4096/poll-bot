@@ -12,14 +12,45 @@ from getpoll import *
 from isdifferent import *
 from credentials import *
 
-TweetItOut = True
-MainLoopTimer = 120
+Debug = True # Production: set to False
+TweetItOut = False # Production: set to True
+InitialDelayTimer = 6 # Production: set to 60
+MainLoopTimer = 12 # Production set to 120
+
+BetweenTweetTimer = 5
+
+class Poll:
+    keyword = ""
+    pollName = ""
+    preservedPollName = ""
+    pollDisplayName = ""
+    resourceBase = 'https://elections.huffingtonpost.com/pollster/api/v2/polls/'
+    pollReferralBase = "https://elections.huffingtonpost.com/pollster/polls/"
+    pollListResource = "https://elections.huffingtonpost.com/pollster/api/v2/polls"
+
+gallupPoll = Poll()
+gallupPoll.keyword = "gallup"
+gallupPoll.pollName = "trump-approval-poll-gallup"
+gallupPoll.preservedPollName = "trump-approval-poll-gallup.last"
+gallupPoll.pollDisplayName = "Trump Approval Rating - Gallup"
+
+ipsosPoll = Poll()
+ipsosPoll.keyword = "ipsos"
+ipsosPoll.pollName = "trump-approval-poll-ipsos"
+ipsosPoll.preservedPollName = "trump-approval-poll-ipsos.last"
+ipsosPoll.pollDisplayName = "Trump Approval Rating - Ipsos"
+
+quinnipiacPoll = Poll()
+quinnipiacPoll.keyword = "quinnipiac"
+quinnipiacPoll.pollName = "trump-approval-poll-quinnipiac"
+quinnipiacPoll.preservedPollName = "trump-approval-poll-quinnipiac.last"
+quinnipiacPoll.pollDisplayName = "Trump Approval Rating - Quinnipiac"
 
 #
 # Initialize and message when the bot starts
 #
 def initialize():
-    time.sleep(60)
+    time.sleep(InitialDelayTimer)
     message = 'ATLAS poll-bot restarted...'
     recipients = [COREY, DAD]
     for recipient in recipients:
@@ -29,33 +60,27 @@ def initialize():
 #
 # Check a poll result and decide whether to act on it
 #
-def checkPoll():
+def checkPoll(poll):
+    pollId = findPoll(poll.pollListResource, poll.keyword)
+    resource = poll.resourceBase + pollId
+    pollReferralLink = poll.pollReferralBase + pollId
 
-    pollName = "trump-approval-poll"
-    preservedPollName = "trump-approval-poll.last"
-    resourceBase = 'https://elections.huffingtonpost.com/pollster/api/v2/polls/'
-    pollDisplayName = "Trump Approval Rating - Gallup"
-    pollReferralBase = "https://elections.huffingtonpost.com/pollster/polls/"
-    pollListResource = "https://elections.huffingtonpost.com/pollster/api/v2/polls"
-
-    pollId = findPoll(pollListResource, 'gallup')
-    resource = resourceBase + pollId
-    pollReferralLink = pollReferralBase + pollId
-
+    # Gallup: gallup-<number>
+    # Ipsos: ipsos-reuters-<number>
     # NBC / WSJ: nbc-wsj-<number>
     # Quinnipiac: quinnipiac-<number>
-    # Gallup: gallup-<number>
 
     # Preserve the last polling data
-    if os.path.isfile(pollName + '.json'):
-        os.rename(pollName + '.json', preservedPollName + '.json')
+    if os.path.isfile(poll.pollName + '.json'):
+        if not os.path.isfile(poll.preservedPollName + '.json'):
+            os.rename(poll.pollName + '.json', poll.preservedPollName + '.json')
 
     # Load the latest poll result
-    result = getPoll(resource, pollName, saveAside=True, debug=False)
+    result = getPoll(resource, poll.pollName, saveAside=True, debug=Debug)
 
     # Compare to see if result has changed
-    if isDifferent(pollName + '.json', preservedPollName + '.json', debug=True):
-        message = pollDisplayName + \
+    if isDifferent(poll.pollName + '.json', poll.preservedPollName + '.json', debug=Debug):
+        message = poll.pollDisplayName + \
             "   Approve: " + str(result["Approve"]) + \
             "   Disapprove: " + str(result["Disapprove"]) + \
             "   See: " + pollReferralLink
@@ -91,8 +116,16 @@ if __name__ == "__main__":
                 break
             else:
                 processRemoteCommand(remoteCommand)
-            checkPoll()
+            checkPoll(ipsosPoll)
+            time.sleep(BetweenTweetTimer)
+            checkPoll(gallupPoll)
+            time.sleep(BetweenTweetTimer)
+            checkPoll(quinnipiacPoll)
         except Exception as e:
+            try:
+                print e
+            except Exception as inner:
+                print "Could not print exception."
             print "Exception in main loop...continuing."
         print 'Waiting ' + str(MainLoopTimer) + ' seconds.'
         time.sleep(MainLoopTimer)

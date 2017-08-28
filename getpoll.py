@@ -6,6 +6,7 @@ import requests
 import datetime
 
 # All polls: https://elections.huffingtonpost.com/pollster/api/v2/polls
+# By having resource /<slug> we can access an individual poll
 
 def findPoll(resourcePath, target, debug=False):
 
@@ -45,7 +46,7 @@ def getPoll(resourcePath, baseName, saveAside=True, debug=False):
         if debug: print "not 200"
         return False
 
-    # print r.text
+    # First block is "Approve"
 
     text_a = data["poll_questions"][0]["sample_subpopulations"][0]["responses"][0]["text"]
     value_a = data["poll_questions"][0]["sample_subpopulations"][0]["responses"][0]["value"]
@@ -53,6 +54,8 @@ def getPoll(resourcePath, baseName, saveAside=True, debug=False):
     if debug:
         print text_a
         print value_a
+
+    # Second block is "Disapprove"
 
     text_d = data["poll_questions"][0]["sample_subpopulations"][0]["responses"][1]["text"]
     value_d = data["poll_questions"][0]["sample_subpopulations"][0]["responses"][1]["value"]

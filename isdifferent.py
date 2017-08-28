@@ -12,7 +12,7 @@ def isDifferent(firstFile, secondFile, debug=False):
     except:
         return True
 
-    if debug: print "First:"
+    if debug: print "First: " + firstFile
     if debug: print firstContent
 
     try:
@@ -22,7 +22,7 @@ def isDifferent(firstFile, secondFile, debug=False):
     except:
         return True
 
-    if debug: print "Second:"
+    if debug: print "Second: " + secondFile
     if debug: print secondContent
 
     if firstContent != secondContent:
